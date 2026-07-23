@@ -17,6 +17,7 @@ class QuestionEdit extends Component
     public $difficulty_level;
     public $point_weight;
     public $validation_status;
+    public $question_type;
 
     // For answers
     public $answers = [];
@@ -37,6 +38,7 @@ class QuestionEdit extends Component
         $this->difficulty_level = $question->difficulty_level;
         $this->point_weight = $question->point_weight;
         $this->validation_status = $question->validation_status;
+        $this->question_type = $question->question_type;
 
         // Load existing answers
         foreach ($question->answers as $answer) {
@@ -48,7 +50,7 @@ class QuestionEdit extends Component
         }
 
         // If no answers, add one empty
-        if (empty($this->answers)) {
+        if (empty($this->answers) && $this->question_type !== 'essay') {
             $this->addAnswer();
         }
     }
@@ -80,17 +82,23 @@ class QuestionEdit extends Component
 
     protected function rules()
     {
-        return [
+        $rules = [
             'competition_id' => 'required|exists:competitions,id',
             'category_id' => 'required|exists:categories,id',
             'question_text' => 'required|string|min:10',
             'difficulty_level' => 'required|in:easy,medium,hard',
             'point_weight' => 'required|integer|min:1|max:1000',
             'validation_status' => 'required|in:pending,approved,rejected',
-            'answers' => 'required|array|min:2',
-            'answers.*.answer_text' => 'required|string|min:1',
-            'answers.*.is_correct' => 'boolean',
+            'question_type' => 'required|in:multiple_choice,essay',
         ];
+
+        if ($this->question_type !== 'essay') {
+            $rules['answers'] = 'required|array|min:2';
+            $rules['answers.*.answer_text'] = 'required|string|min:1';
+            $rules['answers.*.is_correct'] = 'boolean';
+        }
+
+        return $rules;
     }
 
     protected $messages = [
@@ -113,11 +121,13 @@ class QuestionEdit extends Component
         $this->validate();
 
         // Check if at least one answer is marked as correct
-        $hasCorrectAnswer = collect($this->answers)->contains('is_correct', true);
+        if ($this->question_type !== 'essay') {
+            $hasCorrectAnswer = collect($this->answers)->contains('is_correct', true);
 
-        if (!$hasCorrectAnswer) {
-            $this->addError('answers', 'You must mark at least one answer as correct.');
-            return;
+            if (!$hasCorrectAnswer) {
+                $this->addError('answers', 'You must mark at least one answer as correct.');
+                return;
+            }
         }
 
         $question->update([
@@ -127,6 +137,7 @@ class QuestionEdit extends Component
             'difficulty_level' => $this->difficulty_level,
             'point_weight' => $this->point_weight,
             'validation_status' => $this->validation_status,
+            'question_type' => $this->question_type,
         ]);
 
         // Delete removed answers
@@ -135,22 +146,34 @@ class QuestionEdit extends Component
         }
 
         // Update or create answers
-        foreach ($this->answers as $answer) {
-            if ($answer['id']) {
-                Answer::find($answer['id'])->update([
-                    'answer_text' => $answer['answer_text'],
-                    'is_correct' => $answer['is_correct'] ?? false,
-                ]);
-            } else {
-                Answer::create([
-                    'question_id' => $question->id,
-                    'answer_text' => $answer['answer_text'],
-                    'is_correct' => $answer['is_correct'] ?? false,
-                ]);
+        if ($this->question_type !== 'essay') {
+            foreach ($this->answers as $answer) {
+                if ($answer['id']) {
+                    Answer::find($answer['id'])->update([
+                        'answer_text' => $answer['answer_text'],
+                        'is_correct' => $answer['is_correct'] ?? false,
+                    ]);
+                } else {
+                    Answer::create([
+                        'question_id' => $question->id,
+                        'answer_text' => $answer['answer_text'],
+                        'is_correct' => $answer['is_correct'] ?? false,
+                    ]);
+                }
             }
+        } else {
+            // Remove all previous answers if changed to essay
+            Answer::where('question_id', $question->id)->delete();
         }
 
+        session()->flash('message', 'Question updated successfully.');
+
         $this->dispatch('question-updated');
+
+        if (auth()->user()->role === 'qualifier') {
+            return redirect()->route('qualifier.questions.index');
+        }
+        return redirect()->route('admin.questions.index');
     }
 
     public function render()

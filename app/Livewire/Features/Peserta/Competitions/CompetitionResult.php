@@ -14,6 +14,8 @@ class CompetitionResult extends Component
     public $answers;
     public $correctAnswers;
     public $wrongAnswers;
+    public $hasPendingEssay = false;
+    public $pendingEssayCount = 0;
 
     public function mount(Competition $competition)
     {
@@ -24,11 +26,18 @@ class CompetitionResult extends Component
             ->firstOrFail();
 
         $this->answers = ParticipantAnswer::where('competition_participant_id', $this->participant->id)
-            ->with(['question.category', 'question.answers', 'answer'])
+            ->with(['question.category', 'question.answers', 'answer', 'verifier'])
             ->get();
 
         $this->correctAnswers = $this->answers->where('is_correct', true)->count();
-        $this->wrongAnswers = $this->answers->where('is_correct', false)->count();
+        $this->wrongAnswers = $this->answers->where('is_correct', false)->where('grading_status', 'graded')->count();
+
+        // Detect pending essay answers
+        $pendingEssays = $this->answers->filter(
+            fn($a) => $a->question?->question_type === 'essay' && $a->grading_status === 'pending'
+        );
+        $this->hasPendingEssay = $pendingEssays->isNotEmpty();
+        $this->pendingEssayCount = $pendingEssays->count();
     }
 
     /**
@@ -91,9 +100,11 @@ class CompetitionResult extends Component
     public function render()
     {
         $performanceData = $this->getPerformanceData();
-        
+
         return view('livewire.features.peserta.competitions.competition-result', [
-            'performanceData' => $performanceData
+            'performanceData'   => $performanceData,
+            'hasPendingEssay'   => $this->hasPendingEssay,
+            'pendingEssayCount' => $this->pendingEssayCount,
         ]);
     }
 }

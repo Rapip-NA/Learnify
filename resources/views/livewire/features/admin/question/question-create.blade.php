@@ -70,8 +70,22 @@
                             @enderror
                         </div>
 
-                        <!-- Difficulty, Points, Status -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Difficulty, Points, Status, Type -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <!-- Question Type -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">
+                                    Question Type <span class="text-red-400">*</span>
+                                </label>
+                                <select wire:model.live="question_type"
+                                    class="w-full px-4 py-3 bg-slate-900 border @error('question_type') border-red-500 @else border-slate-700 @enderror rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                                    <option value="multiple_choice">Multiple Choice</option>
+                                    <option value="essay">Essay</option>
+                                </select>
+                                @error('question_type')
+                                    <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <!-- Difficulty -->
                             <div>
                                 <label class="block text-sm font-semibold text-slate-300 mb-2">
@@ -119,6 +133,7 @@
                         </div>
 
                         <!-- Answers Section -->
+                        @if($question_type === 'multiple_choice')
                         <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
                             <div class="flex justify-between items-center mb-4">
                                 <label class="text-lg font-semibold text-white">
@@ -137,7 +152,7 @@
                                     class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
                                     {{ $message }}
                                 </div>
-                            @enderror>
+                            @enderror
 
                             @foreach ($answers as $index => $answer)
                                 <div
@@ -173,6 +188,16 @@
                                 correct answer.
                             </p>
                         </div>
+                        @else
+                        {{-- Essay info box --}}
+                        <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5 flex items-start gap-4">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">✏️</div>
+                            <div>
+                                <h4 class="text-purple-300 font-bold text-lg mb-1">Soal Tipe Essay</h4>
+                                <p class="text-slate-400 text-sm">Soal ini berjenis essay — peserta akan menjawab dengan teks bebas. Jawaban tidak diperiksa secara otomatis dan harus divalidasi secara manual oleh qualifier pembuat soal.</p>
+                            </div>
+                        </div>
+                        @endif
 
                         <!-- Buttons -->
                         <div class="flex justify-end gap-4 pt-6 border-t border-slate-700">

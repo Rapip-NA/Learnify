@@ -23,8 +23,13 @@ class QuestionCreate extends Component
 
     public function mount()
     {
-        // Initialize with one empty answer
+        // Initialize with two empty answers for multiple choice (default)
         $this->addAnswer();
+        $this->addAnswer();
+
+        if (auth()->user()->role === 'qualifier') {
+            $this->validation_status = 'approved';
+        }
     }
 
     public function addAnswer()
@@ -117,6 +122,10 @@ class QuestionCreate extends Component
         }
 
         session()->flash('message', 'Question created successfully.');
+
+        if (auth()->user()->role === 'qualifier') {
+            return redirect()->route('qualifier.questions.index');
+        }
         return redirect()->route('admin.questions.index');
     }
 

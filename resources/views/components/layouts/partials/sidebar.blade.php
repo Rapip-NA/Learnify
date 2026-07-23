@@ -142,16 +142,16 @@
                     <span class="font-medium">Category</span>
                 </a>
 
-                <a href="{{ route('admin.questions.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('admin.questions*') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
+                <a href="{{ route('qualifier.questions.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('qualifier.questions*') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
                     <i class="bi bi-card-checklist text-lg"></i>
-                    <span class="font-medium">Question</span>
+                    <span class="font-medium">Bank Soal</span>
                 </a>
 
                 <a href="{{ route('qualifier.answer-validation') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('qualifier.answer-validation') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
                     <i class="bi bi-check2-square text-lg"></i>
-                    <span class="font-medium">Answer Validation</span>
+                    <span class="font-medium">Validasi Essay</span>
                 </a>
 
                 <a href="{{ route('global.leaderboard') }}"
