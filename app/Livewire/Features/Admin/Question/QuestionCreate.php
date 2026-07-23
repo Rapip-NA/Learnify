@@ -77,6 +77,12 @@ class QuestionCreate extends Component
 
     public function save()
     {
+        if (auth()->user()->role === 'qualifier') {
+            $comp = Competition::find($this->competition_id);
+            if ($comp && $comp->created_by !== auth()->id()) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
         $this->validate();
 
         // Check if at least one answer is marked as correct (only for multiple choice)
@@ -116,7 +122,11 @@ class QuestionCreate extends Component
 
     public function render()
     {
-        $competitions = Competition::select('id', 'title')->get();
+        $competitions = Competition::select('id', 'title')
+            ->when(auth()->user()->role === 'qualifier', function ($query) {
+                $query->where('created_by', auth()->id());
+            })
+            ->get();
         $categories = Category::select('id', 'name')->get();
 
         return view('livewire.features.admin.question.question-create', [

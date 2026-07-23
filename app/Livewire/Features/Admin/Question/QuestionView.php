@@ -18,6 +18,10 @@ class QuestionView extends Component
             'verifier',
             'answers'
         ])->findOrFail($id);
+
+        if (auth()->user()->role === 'qualifier' && $this->question->competition->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     public function confirmDelete()
@@ -31,6 +35,9 @@ class QuestionView extends Component
             $question = Question::find($this->deleteId);
             
             if ($question) {
+                if (auth()->user()->role === 'qualifier' && $question->competition->created_by !== auth()->id()) {
+                    abort(403, 'Unauthorized action.');
+                }
                 // Delete related answers first
                 $question->answers()->delete();
                 

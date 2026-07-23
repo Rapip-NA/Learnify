@@ -24,6 +24,9 @@ class CompetitionEdit extends Component
 
     public function mount(Competition $competition)
     {
+        if (auth()->user()->role === 'qualifier' && $competition->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->competition = $competition;
         $this->title = $competition->title;
         $this->description = $competition->description;
@@ -34,6 +37,9 @@ class CompetitionEdit extends Component
 
     public function update()
     {
+        if (auth()->user()->role === 'qualifier' && $this->competition->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate();
 
         $this->competition->update([

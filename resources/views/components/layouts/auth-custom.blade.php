@@ -234,6 +234,10 @@
         body.light-theme #theme-toggle svg {
             color: #64748b;
         }
+
+        body.light-theme .hover\:text-white:hover {
+            color: #4f46e5 !important;
+        }
     </style>
 </head>
 

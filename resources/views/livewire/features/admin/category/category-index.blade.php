@@ -78,18 +78,20 @@
                             </a>
 
                             <!-- Edit Button -->
-                            <a href="{{ route('admin.categories.edit', $category) }}"
-                                class="p-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30 transition flex-1 text-center"
-                                title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
+                            @if (auth()->user()->role !== 'qualifier' || $category->created_by === auth()->id())
+                                <a href="{{ route('admin.categories.edit', $category) }}"
+                                    class="p-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30 transition flex-1 text-center"
+                                    title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
 
-                            <!-- Delete Button -->
-                            <button onclick="confirmDeleteCategory({{ $category->id }})"
-                                class="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition flex-1 text-center"
-                                title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                                <!-- Delete Button -->
+                                <button onclick="confirmDeleteCategory({{ $category->id }})"
+                                    class="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition flex-1 text-center"
+                                    title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            @endif
                         </div>
                     </div>
                 @empty
@@ -140,18 +142,20 @@
                                             </a>
 
                                             <!-- Edit Button -->
-                                            <a href="{{ route('admin.categories.edit', $category) }}"
-                                                class="p-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30 transition"
-                                                title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
+                                            @if (auth()->user()->role !== 'qualifier' || $category->created_by === auth()->id())
+                                                <a href="{{ route('admin.categories.edit', $category) }}"
+                                                    class="p-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30 transition"
+                                                    title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
 
-                                            <!-- Delete Button -->
-                                            <button onclick="confirmDeleteCategory({{ $category->id }})"
-                                                class="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition"
-                                                title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                                <!-- Delete Button -->
+                                                <button onclick="confirmDeleteCategory({{ $category->id }})"
+                                                    class="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition"
+                                                    title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

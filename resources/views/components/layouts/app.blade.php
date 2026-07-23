@@ -164,6 +164,52 @@
             background: #cbd5e1;
             border-radius: 4px;
         }
+
+        /* Global Light Theme Overrides */
+        body.light-theme .text-white {
+            color: #0f172a !important;
+        }
+
+        body.light-theme .text-slate-200 {
+            color: #1e293b !important;
+        }
+
+        body.light-theme .text-slate-300 {
+            color: #334155 !important;
+        }
+
+        body.light-theme .text-slate-400 {
+            color: #475569 !important;
+        }
+
+        body.light-theme .text-slate-500 {
+            color: #64748b !important;
+        }
+
+        body.light-theme .bg-slate-800,
+        body.light-theme .bg-slate-900,
+        body.light-theme .bg-slate-950,
+        body.light-theme .from-slate-800,
+        body.light-theme .to-slate-900,
+        body.light-theme .from-slate-900,
+        body.light-theme .to-slate-950,
+        body.light-theme .bg-slate-800\/50,
+        body.light-theme .bg-slate-900\/50 {
+            background-color: rgba(241, 245, 249, 0.65) !important;
+            background: rgba(241, 245, 249, 0.65) !important;
+        }
+
+        body.light-theme .border-slate-700,
+        body.light-theme .border-slate-800,
+        body.light-theme .divide-slate-700,
+        body.light-theme .divide-slate-700\/50,
+        body.light-theme .divide-y {
+            border-color: #cbd5e1 !important;
+        }
+
+        body.light-theme .hover\:text-white:hover {
+            color: #4f46e5 !important;
+        }
     </style>
     @stack('styles')
 </head>

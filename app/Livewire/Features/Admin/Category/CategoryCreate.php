@@ -27,6 +27,7 @@ class CategoryCreate extends Component
         Category::create([
             'name' => $this->name,
             'description' => $this->description,
+            'created_by' => auth()->id(),
         ]);
 
         session()->flash('success', 'Category created successfully.');

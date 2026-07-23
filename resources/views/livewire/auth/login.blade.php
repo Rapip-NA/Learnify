@@ -60,6 +60,25 @@
                         class="font-bold text-indigo-400 hover:text-indigo-300 transition-colors">Daftar Gratis</a>
                 </p>
             </div>
+
+            <!-- Quick Login for testing -->
+            <div class="mt-6 pt-6 border-t border-slate-700/50">
+                <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider text-center mb-3">Quick Login (Testing)</p>
+                <div class="grid grid-cols-3 gap-2">
+                    <button wire:click="loginAs('admin')" type="button"
+                        class="px-3 py-2 text-xs font-semibold rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30 transition text-center">
+                        Admin
+                    </button>
+                    <button wire:click="loginAs('qualifier')" type="button"
+                        class="px-3 py-2 text-xs font-semibold rounded-lg bg-pink-500/20 text-pink-400 hover:bg-pink-500/30 border border-pink-500/30 transition text-center">
+                        Qualifier
+                    </button>
+                    <button wire:click="loginAs('peserta')" type="button"
+                        class="px-3 py-2 text-xs font-semibold rounded-lg bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 border border-indigo-500/30 transition text-center">
+                        Peserta
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

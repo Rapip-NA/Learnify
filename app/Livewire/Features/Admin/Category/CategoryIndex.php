@@ -30,6 +30,9 @@ class CategoryIndex extends Component
             $category = Category::find($id);
 
             if ($category) {
+                if (auth()->user()->role === 'qualifier' && $category->created_by !== auth()->id()) {
+                    abort(403, 'Unauthorized action.');
+                }
                 $categoryName = $category->name;
                 $category->delete();
 

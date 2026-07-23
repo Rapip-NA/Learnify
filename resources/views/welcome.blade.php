@@ -256,7 +256,7 @@
 
         body.light-theme nav a,
         body.light-theme nav button {
-            color: #64748b;
+            color: #334155;
         }
 
         body.light-theme nav a:hover,
@@ -268,24 +268,44 @@
             color: #0f172a !important;
         }
 
-        body.light-theme .text-slate-300,
+        body.light-theme .text-slate-200 {
+            color: #1e293b !important;
+        }
+
+        body.light-theme .text-slate-300 {
+            color: #334155 !important;
+        }
+
         body.light-theme .text-slate-400 {
-            color: #64748b !important;
+            color: #475569 !important;
         }
 
         body.light-theme .text-slate-500 {
-            color: #94a3b8 !important;
+            color: #64748b !important;
         }
 
         body.light-theme .bg-slate-800,
+        body.light-theme .bg-slate-900,
+        body.light-theme .bg-slate-950,
         body.light-theme .from-slate-800,
-        body.light-theme .to-slate-900 {
+        body.light-theme .to-slate-900,
+        body.light-theme .from-slate-900,
+        body.light-theme .to-slate-950 {
+            background-color: rgba(241, 245, 249, 0.65) !important;
+            background: rgba(241, 245, 249, 0.65) !important;
+        }
+
+        body.light-theme .card-hover {
             background: white !important;
         }
 
         body.light-theme .border-slate-700,
         body.light-theme .border-slate-800 {
-            border-color: #e2e8f0 !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        body.light-theme .hover\:text-white:hover {
+            color: #4f46e5 !important;
         }
 
         body.light-theme .card-hover:hover {

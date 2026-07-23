@@ -41,6 +41,23 @@ class Login extends Component
         }
     }
 
+    public function loginAs($role)
+    {
+        $user = \App\Models\User::where('role', $role)->first();
+        if ($user) {
+            Auth::login($user);
+            session()->regenerate();
+
+            if ($role === 'admin') {
+                return redirect()->intended('/admin/dashboard');
+            } elseif ($role === 'qualifier') {
+                return redirect()->intended('/qualifier/dashboard'); 
+            } else {
+                return redirect()->intended('/peserta/dashboard');
+            }
+        }
+    }
+
     public function render()
     {
         return view('livewire.auth.login');

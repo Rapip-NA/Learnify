@@ -130,6 +130,24 @@
                     <span class="font-medium">Dashboard</span>
                 </a>
 
+                <a href="{{ route('admin.competitions.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('admin.competitions*') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
+                    <i class="bi bi-trophy text-lg"></i>
+                    <span class="font-medium">Competitions</span>
+                </a>
+
+                <a href="{{ route('admin.categories.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('admin.categories*') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
+                    <i class="bi bi-tags text-lg"></i>
+                    <span class="font-medium">Category</span>
+                </a>
+
+                <a href="{{ route('admin.questions.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('admin.questions*') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
+                    <i class="bi bi-card-checklist text-lg"></i>
+                    <span class="font-medium">Question</span>
+                </a>
+
                 <a href="{{ route('qualifier.answer-validation') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition-all {{ request()->routeIs('qualifier.answer-validation') ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : '' }}">
                     <i class="bi bi-check2-square text-lg"></i>

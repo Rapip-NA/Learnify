@@ -24,6 +24,9 @@ class CategoryEdit extends Component
 
     public function mount(Category $category)
     {
+        if (auth()->user()->role === 'qualifier' && $category->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->category = $category;
         $this->name = $category->name;
         $this->description = $category->description;
@@ -31,6 +34,9 @@ class CategoryEdit extends Component
 
     public function update()
     {
+        if (auth()->user()->role === 'qualifier' && $this->category->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->validate();
 
         $this->category->update([
@@ -48,6 +54,9 @@ class CategoryEdit extends Component
 
     public function delete()
     {
+        if (auth()->user()->role === 'qualifier' && $this->category->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         try {
             $categoryName = $this->category->name;
             $categoryId = $this->category->id;

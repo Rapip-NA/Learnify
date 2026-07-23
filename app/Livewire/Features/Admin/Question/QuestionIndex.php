@@ -60,6 +60,9 @@ class QuestionIndex extends Component
         $question = Question::find($id);
         
         if ($question) {
+            if (auth()->user()->role === 'qualifier' && $question->competition->created_by !== auth()->id()) {
+                abort(403, 'Unauthorized action.');
+            }
             // Delete related answers first
             $question->answers()->delete();
             
@@ -76,6 +79,11 @@ class QuestionIndex extends Component
     public function render()
     {
         $questions = Question::with(['competition', 'category', 'verifier'])
+            ->when(auth()->user()->role === 'qualifier', function ($query) {
+                $query->whereHas('competition', function ($q) {
+                    $q->where('created_by', auth()->id());
+                });
+            })
             ->when($this->search, function ($query) {
                 $query->where('question_text', 'like', '%' . $this->search . '%');
             })
@@ -94,7 +102,11 @@ class QuestionIndex extends Component
             ->latest()
             ->paginate(10);
 
-        $competitions = Competition::select('id', 'title')->get();
+        $competitions = Competition::select('id', 'title')
+            ->when(auth()->user()->role === 'qualifier', function ($query) {
+                $query->where('created_by', auth()->id());
+            })
+            ->get();
         $categories = Category::select('id', 'name')->get();
 
         return view('livewire.features.admin.question.question-index', [

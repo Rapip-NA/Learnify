@@ -35,6 +35,9 @@ class CompetitionIndex extends Component
         $competition = Competition::find($id);
         
         if ($competition) {
+            if (auth()->user()->role === 'qualifier' && $competition->created_by !== auth()->id()) {
+                abort(403, 'Unauthorized action.');
+            }
             $competition->delete();
             $this->dispatch('competition-deleted');
         }
@@ -49,6 +52,9 @@ class CompetitionIndex extends Component
 
         $competitions = Competition::query()
             ->with('creator')
+            ->when(auth()->user()->role === 'qualifier', function ($query) {
+                $query->where('created_by', auth()->id());
+            })
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%')
                     ->orWhere('description', 'like', '%' . $this->search . '%');

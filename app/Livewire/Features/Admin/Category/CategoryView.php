@@ -11,6 +11,9 @@ class CategoryView extends Component
 
     public function mount(Category $category)
     {
+        if (auth()->user()->role === 'qualifier' && $category->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->category = $category;
     }
     public function render()

@@ -11,6 +11,9 @@ class CompetitionView extends Component
 
     public function mount(Competition $competition)
     {
+        if (auth()->user()->role === 'qualifier' && $competition->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
         $this->competition = $competition;
     }
 

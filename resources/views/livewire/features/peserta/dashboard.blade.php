@@ -73,6 +73,59 @@
                     </div>
                 </div>
 
+                <!-- Qualifier Application Alert/Card -->
+                @if (session()->has('qualifier_message'))
+                    <div class="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
+                        <i class="bi bi-check-circle text-green-400 text-xl"></i>
+                        <span class="text-green-400 font-semibold">{{ session('qualifier_message') }}</span>
+                    </div>
+                @endif
+
+                @if (Auth::user()->qualifier_application_status === 'pending')
+                    <div class="bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-2xl p-6 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-400">
+                                <i class="bi bi-hourglass-split text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-lg">Pengajuan Menjadi Qualifier Sedang Diproses</h4>
+                                <p class="text-slate-400 text-sm">Terima kasih atas pengajuan Anda. Admin sedang meninjau data Anda untuk menjadi Qualifier.</p>
+                            </div>
+                        </div>
+                    </div>
+                @elseif (Auth::user()->qualifier_application_status === 'rejected')
+                    <div class="bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/30 rounded-2xl p-6 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400">
+                                <i class="bi bi-exclamation-octagon text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-lg">Pengajuan Qualifier Belum Disetujui</h4>
+                                <p class="text-slate-400 text-sm">Sayangnya pengajuan Anda sebelumnya ditolak. Anda dapat mencoba mengajukan diri kembali.</p>
+                            </div>
+                        </div>
+                        <button wire:click="applyForQualifier" class="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-red-500/50">
+                            Ajukan Kembali
+                        </button>
+                    </div>
+                @elseif (!Auth::user()->qualifier_application_status)
+                    <div class="bg-gradient-to-br from-indigo-500/10 to-purple-600/10 border border-indigo-500/20 rounded-2xl p-6 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                <i class="bi bi-shield-lock text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-lg">Tertarik Menjadi Qualifier?</h4>
+                                <p class="text-slate-400 text-sm">Dapatkan akses untuk membuat kompetisi, kategori, serta memverifikasi jawaban peserta lainnya.</p>
+                            </div>
+                        </div>
+                        <button wire:click="applyForQualifier" class="px-6 py-3 gradient-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-indigo-500/50 transition-all flex items-center gap-2">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Ajukan Diri Sekarang
+                        </button>
+                    </div>
+                @endif
+
                 <!-- Charts Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <!-- Performance Bar Chart -->

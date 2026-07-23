@@ -12,6 +12,15 @@ class Dashboard extends Component
     #[Layout('components.layouts.app')]
     #[Title('Peserta Dashboard')]
 
+    public function applyForQualifier()
+    {
+        $user = auth()->user();
+        if ($user->role === 'peserta' && (!$user->qualifier_application_status || $user->qualifier_application_status === 'rejected')) {
+            $user->update(['qualifier_application_status' => 'pending']);
+            session()->flash('qualifier_message', 'Pengajuan menjadi qualifier berhasil dikirim!');
+        }
+    }
+
     public function getDashboardData()
     {
         $userId = auth()->id();

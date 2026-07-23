@@ -25,7 +25,11 @@ class QuestionEdit extends Component
     public function mount($id)
     {
         $this->questionId = $id;
-        $question = Question::with('answers')->findOrFail($id);
+        $question = Question::with(['answers', 'competition'])->findOrFail($id);
+
+        if (auth()->user()->role === 'qualifier' && $question->competition->created_by !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $this->competition_id = $question->competition_id;
         $this->category_id = $question->category_id;
@@ -96,6 +100,16 @@ class QuestionEdit extends Component
 
     public function update()
     {
+        $question = Question::findOrFail($this->questionId);
+        if (auth()->user()->role === 'qualifier') {
+            if ($question->competition->created_by !== auth()->id()) {
+                abort(403, 'Unauthorized action.');
+            }
+            $newComp = Competition::find($this->competition_id);
+            if ($newComp && $newComp->created_by !== auth()->id()) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
         $this->validate();
 
         // Check if at least one answer is marked as correct
@@ -105,8 +119,6 @@ class QuestionEdit extends Component
             $this->addError('answers', 'You must mark at least one answer as correct.');
             return;
         }
-
-        $question = Question::findOrFail($this->questionId);
 
         $question->update([
             'competition_id' => $this->competition_id,
@@ -143,7 +155,11 @@ class QuestionEdit extends Component
 
     public function render()
     {
-        $competitions = Competition::select('id', 'title')->get();
+        $competitions = Competition::select('id', 'title')
+            ->when(auth()->user()->role === 'qualifier', function ($query) {
+                $query->where('created_by', auth()->id());
+            })
+            ->get();
         $categories = Category::select('id', 'name')->get();
 
         return view('livewire.features.admin.question.question-edit', [
