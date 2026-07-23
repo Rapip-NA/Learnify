@@ -10,7 +10,7 @@ class CategoryIndex extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
+    protected $paginationTheme = 'tailwind';
 
     public $search = '';
     public $perPage = 10;

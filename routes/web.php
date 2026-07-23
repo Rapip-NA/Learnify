@@ -10,7 +10,14 @@ Route::get('/', function () {
         ->orderBy('created_at', 'desc')
         ->limit(6)
         ->get();    
-    return view('welcome', compact('competitions'));
+
+    $stats = [
+        'active_participants' => \App\Models\User::where('role', 'peserta')->count(),
+        'qualifiers' => \App\Models\User::where('role', 'qualifier')->count(),
+        'competitions' => \App\Models\Competition::count(),
+    ];
+
+    return view('welcome', compact('competitions', 'stats'));
 });
 
 Route::fallback(function () {

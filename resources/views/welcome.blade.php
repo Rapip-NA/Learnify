@@ -338,16 +338,6 @@
                         class="font-bold text-lg sm:text-xl text-transparent bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text">Learnify</span>
                 </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-6 lg:gap-8 relative z-10">
-                    <a href="#kompetisi"
-                        class="text-slate-400 hover:text-white transition font-medium text-sm lg:text-base">Kompetisi</a>
-                    <a href="#tentang"
-                        class="text-slate-400 hover:text-white transition font-medium text-sm lg:text-base">Tentang</a>
-                    {{-- <a href="{{ route('global.leaderboard') }}"
-                        class="text-slate-400 hover:text-white transition font-medium text-sm lg:text-base">Leaderboard</a> --}}
-                </div>
-
                 <!-- Action Buttons -->
                 <div class="flex items-center gap-2 sm:gap-4 relative z-10">
                     <!-- Theme Toggle Button -->
@@ -418,22 +408,22 @@
                         class="bg-slate-800 bg-opacity-50 border border-slate-700 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:border-indigo-500 transition text-center">
                         <div
                             class="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text stat-number">
-                            50K+</div>
+                            {{ $stats['active_participants'] }}</div>
                         <div class="text-xs sm:text-sm text-slate-400 mt-1">Peserta Aktif</div>
                     </div>
                     <div
                         class="bg-slate-800 bg-opacity-50 border border-slate-700 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:border-pink-500 transition text-center">
                         <div
                             class="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text stat-number">
-                            $500K</div>
-                        <div class="text-xs sm:text-sm text-slate-400 mt-1">Total Hadiah</div>
+                            {{ $stats['qualifiers'] }}</div>
+                        <div class="text-xs sm:text-sm text-slate-400 mt-1">Penguji</div>
                     </div>
                     <div
                         class="bg-slate-800 bg-opacity-50 border border-slate-700 rounded-xl p-4 sm:p-6 backdrop-blur-sm hover:border-cyan-500 transition text-center">
                         <div
                             class="text-2xl sm:text-3xl lg:text-4xl font-bold text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text stat-number">
-                            15+</div>
-                        <div class="text-xs sm:text-sm text-slate-400 mt-1">Kategori</div>
+                            {{ $stats['competitions'] }}</div>
+                        <div class="text-xs sm:text-sm text-slate-400 mt-1">Kompetisi</div>
                     </div>
                 </div>
 

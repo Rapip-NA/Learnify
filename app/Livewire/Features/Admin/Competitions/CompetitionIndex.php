@@ -11,7 +11,7 @@ class CompetitionIndex extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
+    protected $paginationTheme = 'tailwind';
 
     #[Layout('components.layouts.app')]
 
