@@ -111,12 +111,24 @@ class CompetitionQuiz extends Component
     public function loadExistingAnswers()
     {
         $existingAnswers = ParticipantAnswer::where('competition_participant_id', $this->participant->id)
-            ->pluck('answer_id', 'question_id')
-            ->toArray();
+            ->get(['question_id', 'answer_id', 'essay_answer_text']);
 
         foreach ($this->questions as $index => $question) {
-            if (isset($existingAnswers[$question->id])) {
-                $this->answers[$index] = $existingAnswers[$question->id];
+            $answerObj = $existingAnswers->firstWhere('question_id', $question->id);
+            if ($answerObj) {
+                if ($question->isEssay()) {
+                    if (!empty($answerObj->essay_answer_text)) {
+                        $this->answers[$index] = -1; // Marker for answered essay
+                        // Load saved text into component property if it's the current question
+                        if ($index === $this->currentQuestionIndex) {
+                            $this->essayAnswerText = $answerObj->essay_answer_text;
+                        }
+                    }
+                } else {
+                    if ($answerObj->answer_id !== null) {
+                        $this->answers[$index] = $answerObj->answer_id;
+                    }
+                }
             }
         }
 
@@ -127,6 +139,9 @@ class CompetitionQuiz extends Component
                 break;
             }
         }
+
+        // Initialize state for the starting question
+        $this->loadQuestionData();
     }
 
     public function getCurrentQuestion()
@@ -247,67 +262,76 @@ class CompetitionQuiz extends Component
 
     public function nextQuestion()
     {
-        // Auto-save current answer if selected
+        // Auto-save current answer if selected (multiple choice)
         if ($this->selectedAnswer) {
+            $this->submitAnswer();
+        }
+
+        // Auto-save essay answer if filled
+        $question = $this->getCurrentQuestion();
+        if ($question && $question->isEssay() && !empty(trim($this->essayAnswerText))) {
             $this->submitAnswer();
         }
 
         if ($this->currentQuestionIndex < count($this->questions) - 1) {
             $this->currentQuestionIndex++;
-
-            // Load selected answer if exists
-            if (isset($this->answers[$this->currentQuestionIndex])) {
-                $this->selectedAnswer = $this->answers[$this->currentQuestionIndex];
-            } else {
-                // Unset selectedAnswer for unanswered questions
-                unset($this->selectedAnswer);
-                $this->selectedAnswer = null;
-                // Reset timer for unanswered question
-                $this->questionStartedAt = now();
-            }
+            $this->loadQuestionData();
         }
     }
 
     public function previousQuestion()
     {
-        // Auto-save current answer if selected
+        // Auto-save current answer if selected (multiple choice)
         if ($this->selectedAnswer) {
+            $this->submitAnswer();
+        }
+
+        // Auto-save essay answer if filled
+        $question = $this->getCurrentQuestion();
+        if ($question && $question->isEssay() && !empty(trim($this->essayAnswerText))) {
             $this->submitAnswer();
         }
 
         if ($this->currentQuestionIndex > 0) {
             $this->currentQuestionIndex--;
-
-            // Load selected answer if exists
-            if (isset($this->answers[$this->currentQuestionIndex])) {
-                $this->selectedAnswer = $this->answers[$this->currentQuestionIndex];
-            } else {
-                // Unset selectedAnswer for unanswered questions
-                unset($this->selectedAnswer);
-                $this->selectedAnswer = null;
-                // Reset timer for unanswered question
-                $this->questionStartedAt = now();
-            }
+            $this->loadQuestionData();
         }
     }
 
     public function goToQuestion($index)
     {
-        // Auto-save current answer if selected before navigating
+        // Auto-save current answer if selected before navigating (multiple choice)
         if ($this->selectedAnswer && $index != $this->currentQuestionIndex) {
             $this->submitAnswer();
         }
 
-        $this->currentQuestionIndex = $index;
+        // Auto-save essay answer if filled
+        $question = $this->getCurrentQuestion();
+        if ($question && $question->isEssay() && !empty(trim($this->essayAnswerText)) && $index != $this->currentQuestionIndex) {
+            $this->submitAnswer();
+        }
 
-        // Load selected answer if exists
-        if (isset($this->answers[$this->currentQuestionIndex])) {
-            $this->selectedAnswer = $this->answers[$this->currentQuestionIndex];
+        $this->currentQuestionIndex = $index;
+        $this->loadQuestionData();
+    }
+
+    private function loadQuestionData()
+    {
+        $question = $this->getCurrentQuestion();
+        $this->selectedAnswer = null;
+        $this->essayAnswerText = '';
+
+        $existingAnswer = ParticipantAnswer::where('competition_participant_id', $this->participant->id)
+            ->where('question_id', $question->id)
+            ->first();
+
+        if ($existingAnswer) {
+            if ($question->isEssay()) {
+                $this->essayAnswerText = $existingAnswer->essay_answer_text;
+            } else {
+                $this->selectedAnswer = $existingAnswer->answer_id;
+            }
         } else {
-            // Unset selectedAnswer for unanswered questions
-            unset($this->selectedAnswer);
-            $this->selectedAnswer = null;
-            // Reset timer for unanswered question
             $this->questionStartedAt = now();
         }
     }
@@ -335,6 +359,12 @@ class CompetitionQuiz extends Component
 
         // Auto-save current answer if selected (for last question)
         if ($this->selectedAnswer) {
+            $this->submitAnswer();
+        }
+
+        // Auto-save essay answer if filled (for last question)
+        $question = $this->getCurrentQuestion();
+        if ($question && $question->isEssay() && !empty(trim($this->essayAnswerText))) {
             $this->submitAnswer();
         }
 
